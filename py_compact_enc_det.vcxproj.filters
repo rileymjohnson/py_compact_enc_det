@@ -1,0 +1,93 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="module.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="compact_enc_det\compact_enc_det\compact_enc_det.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="compact_enc_det\compact_enc_det\compact_enc_det_fuzz_test.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="compact_enc_det\compact_enc_det\compact_enc_det_hint_code.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="compact_enc_det\compact_enc_det\compact_enc_det_unittest.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="compact_enc_det\util\encodings\encodings.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="compact_enc_det\util\encodings\encodings_unittest.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="compact_enc_det\util\languages\languages.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="compact_enc_det\compact_enc_det\compact_enc_det.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="compact_enc_det\compact_enc_det\compact_enc_det_generated_tables.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="compact_enc_det\compact_enc_det\compact_enc_det_generated_tables2.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="compact_enc_det\compact_enc_det\compact_enc_det_hint_code.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="compact_enc_det\util\encodings\encodings.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="compact_enc_det\util\encodings\encodings.pb.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="compact_enc_det\util\languages\languages.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="compact_enc_det\util\languages\languages.pb.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="compact_enc_det\util\basictypes.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="compact_enc_det\util\case_insensitive_hash.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="compact_enc_det\util\commandlineflags.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="compact_enc_det\util\logging.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="compact_enc_det\util\port.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="compact_enc_det\util\string_util.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="compact_enc_det\util\varsetter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="compact_enc_det\compact_enc_det\detail_head_string.inc">
+      <Filter>Header Files</Filter>
+    </None>
+    <None Include="setup.py" />
+    <None Include="pyproject.toml" />
+  </ItemGroup>
+</Project>

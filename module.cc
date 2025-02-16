@@ -1,27 +1,88 @@
 #include <pybind11/pybind11.h>
 
-#include <Windows.h>
-#include <cmath>
+#include <tuple>
+#include <string>
 
 #include "compact_enc_det/compact_enc_det.h"
 
-const double e = 2.7182818284590452353602874713527;
+std::tuple<Encoding, int, bool> Binding_DetectEncoding(
+    const std::string& text,
+    int text_length,
+    const std::string& url_hint,
+    const std::string& http_charset_hint,
+    const std::string& meta_charset_hint,
+    const int encoding_hint,
+    const Language language_hint,
+    const CompactEncDet::TextCorpusType corpus_type,
+    bool ignore_7bit_mail_encodings
+) {
+    int bytes_consumed;
+    bool is_reliable;
 
-double sinh_impl(double x) {
-    return (1 - pow(e, (-2 * x))) / (2 * pow(e, -x));
+    auto encoding = CompactEncDet::DetectEncoding(
+        text.c_str(),
+        text_length,
+        url_hint.c_str(),
+        http_charset_hint.c_str(),
+        meta_charset_hint.c_str(),
+        encoding_hint,
+        language_hint,
+        corpus_type,
+        ignore_7bit_mail_encodings,
+        &bytes_consumed,
+        &is_reliable
+    );
+
+    return { encoding, bytes_consumed, is_reliable };
 }
 
-double cosh_impl(double x) {
-    return (1 + pow(e, (-2 * x))) / (2 * pow(e, -x));
+int Binding_BackmapEncodingToRankedEncoding(Encoding enc) {
+    return CompactEncDet::BackmapEncodingToRankedEncoding(enc);
 }
 
-double tanh_impl(double x) {
-    return sinh_impl(x) / cosh_impl(x);
+Encoding Binding_TopEncodingOfLangHint(const std::string& name) {
+    return CompactEncDet::TopEncodingOfLangHint(name.c_str());
+}
+
+Encoding Binding_TopEncodingOfTLDHint(const std::string& name) {
+    return CompactEncDet::TopEncodingOfTLDHint(name.c_str());
+}
+
+Encoding Binding_TopEncodingOfCharsetHint(const std::string& name) {
+    return CompactEncDet::TopEncodingOfCharsetHint(name.c_str());
+}
+
+std::string Binding_Version() {
+    return { CompactEncDet::Version() };
 }
 
 namespace py = pybind11;
 
 PYBIND11_MODULE(py_compact_enc_det, m) {
+    m.def(
+        "DetectEncoding",
+        &Binding_DetectEncoding,
+        py::arg("text"),
+        py::arg("text_length"),
+        py::arg("url_hint"),
+        py::arg("http_charset_hint"),
+        py::arg("meta_charset_hint"),
+        py::arg("encoding_hint"),
+        py::arg("language_hint"),
+        py::arg("corpus_type"),
+        py::arg("ignore_7bit_mail_encodings")
+    );
+    
+    m.def("BackmapEncodingToRankedEncoding", &Binding_BackmapEncodingToRankedEncoding, py::arg("enc"));
+    
+    m.def("TopEncodingOfLangHint", &Binding_TopEncodingOfLangHint, py::arg("name"));
+
+    m.def("TopEncodingOfTLDHint", &Binding_TopEncodingOfTLDHint, py::arg("name"));
+
+    m.def("TopEncodingOfCharsetHint", &Binding_TopEncodingOfCharsetHint, py::arg("name"));
+
+    m.def("Version", &Binding_Version);
+
     py::enum_<CompactEncDet::TextCorpusType>(m, "TextCorpusType")
         .value("WEB_CORPUS", CompactEncDet::TextCorpusType::WEB_CORPUS)
         .value("XML_CORPUS", CompactEncDet::TextCorpusType::XML_CORPUS)
@@ -109,9 +170,170 @@ PYBIND11_MODULE(py_compact_enc_det, m) {
         .value("NUM_ENCODINGS", Encoding::NUM_ENCODINGS)
         .export_values();
 
-    m.def("fast_tanh2", &tanh_impl, R"pbdoc(
-        Compute a hyperbolic tangent of a single argument expressed in radians.
-    )pbdoc");
+    py::enum_<Language>(m, "Language")
+        .value("ENGLISH", Language::ENGLISH)
+        .value("DANISH", Language::DANISH)
+        .value("DUTCH", Language::DUTCH)
+        .value("FINNISH", Language::FINNISH)
+        .value("FRENCH", Language::FRENCH)
+        .value("GERMAN", Language::GERMAN)
+        .value("HEBREW", Language::HEBREW)
+        .value("ITALIAN", Language::ITALIAN)
+        .value("JAPANESE", Language::JAPANESE)
+        .value("KOREAN", Language::KOREAN)
+        .value("NORWEGIAN", Language::NORWEGIAN)
+        .value("POLISH", Language::POLISH)
+        .value("PORTUGUESE", Language::PORTUGUESE)
+        .value("RUSSIAN", Language::RUSSIAN)
+        .value("SPANISH", Language::SPANISH)
+        .value("SWEDISH", Language::SWEDISH)
+        .value("CHINESE", Language::CHINESE)
+        .value("CZECH", Language::CZECH)
+        .value("GREEK", Language::GREEK)
+        .value("ICELANDIC", Language::ICELANDIC)
+        .value("LATVIAN", Language::LATVIAN)
+        .value("LITHUANIAN", Language::LITHUANIAN)
+        .value("ROMANIAN", Language::ROMANIAN)
+        .value("HUNGARIAN", Language::HUNGARIAN)
+        .value("ESTONIAN", Language::ESTONIAN)
+        .value("TG_UNKNOWN_LANGUAGE", Language::TG_UNKNOWN_LANGUAGE)
+        .value("UNKNOWN_LANGUAGE", Language::UNKNOWN_LANGUAGE)
+        .value("BULGARIAN", Language::BULGARIAN)
+        .value("CROATIAN", Language::CROATIAN)
+        .value("SERBIAN", Language::SERBIAN)
+        .value("IRISH", Language::IRISH)
+        .value("GALICIAN", Language::GALICIAN)
+        .value("TAGALOG", Language::TAGALOG)
+        .value("TURKISH", Language::TURKISH)
+        .value("UKRAINIAN", Language::UKRAINIAN)
+        .value("HINDI", Language::HINDI)
+        .value("MACEDONIAN", Language::MACEDONIAN)
+        .value("BENGALI", Language::BENGALI)
+        .value("INDONESIAN", Language::INDONESIAN)
+        .value("LATIN", Language::LATIN)
+        .value("MALAY", Language::MALAY)
+        .value("MALAYALAM", Language::MALAYALAM)
+        .value("WELSH", Language::WELSH)
+        .value("NEPALI", Language::NEPALI)
+        .value("TELUGU", Language::TELUGU)
+        .value("ALBANIAN", Language::ALBANIAN)
+        .value("TAMIL", Language::TAMIL)
+        .value("BELARUSIAN", Language::BELARUSIAN)
+        .value("JAVANESE", Language::JAVANESE)
+        .value("OCCITAN", Language::OCCITAN)
+        .value("URDU", Language::URDU)
+        .value("BIHARI", Language::BIHARI)
+        .value("GUJARATI", Language::GUJARATI)
+        .value("THAI", Language::THAI)
+        .value("ARABIC", Language::ARABIC)
+        .value("CATALAN", Language::CATALAN)
+        .value("ESPERANTO", Language::ESPERANTO)
+        .value("BASQUE", Language::BASQUE)
+        .value("INTERLINGUA", Language::INTERLINGUA)
+        .value("KANNADA", Language::KANNADA)
+        .value("PUNJABI", Language::PUNJABI)
+        .value("SCOTS_GAELIC", Language::SCOTS_GAELIC)
+        .value("SWAHILI", Language::SWAHILI)
+        .value("SLOVENIAN", Language::SLOVENIAN)
+        .value("MARATHI", Language::MARATHI)
+        .value("MALTESE", Language::MALTESE)
+        .value("VIETNAMESE", Language::VIETNAMESE)
+        .value("FRISIAN", Language::FRISIAN)
+        .value("SLOVAK", Language::SLOVAK)
+        .value("CHINESE_T", Language::CHINESE_T)
+        .value("FAROESE", Language::FAROESE)
+        .value("SUNDANESE", Language::SUNDANESE)
+        .value("UZBEK", Language::UZBEK)
+        .value("AMHARIC", Language::AMHARIC)
+        .value("AZERBAIJANI", Language::AZERBAIJANI)
+        .value("GEORGIAN", Language::GEORGIAN)
+        .value("TIGRINYA", Language::TIGRINYA)
+        .value("PERSIAN", Language::PERSIAN)
+        .value("BOSNIAN", Language::BOSNIAN)
+        .value("SINHALESE", Language::SINHALESE)
+        .value("NORWEGIAN_N", Language::NORWEGIAN_N)
+        .value("PORTUGUESE_P", Language::PORTUGUESE_P)
+        .value("PORTUGUESE_B", Language::PORTUGUESE_B)
+        .value("XHOSA", Language::XHOSA)
+        .value("ZULU", Language::ZULU)
+        .value("GUARANI", Language::GUARANI)
+        .value("SESOTHO", Language::SESOTHO)
+        .value("TURKMEN", Language::TURKMEN)
+        .value("KYRGYZ", Language::KYRGYZ)
+        .value("BRETON", Language::BRETON)
+        .value("TWI", Language::TWI)
+        .value("YIDDISH", Language::YIDDISH)
+        .value("SERBO_CROATIAN", Language::SERBO_CROATIAN)
+        .value("SOMALI", Language::SOMALI)
+        .value("UIGHUR", Language::UIGHUR)
+        .value("KURDISH", Language::KURDISH)
+        .value("MONGOLIAN", Language::MONGOLIAN)
+        .value("ARMENIAN", Language::ARMENIAN)
+        .value("LAOTHIAN", Language::LAOTHIAN)
+        .value("SINDHI", Language::SINDHI)
+        .value("RHAETO_ROMANCE", Language::RHAETO_ROMANCE)
+        .value("AFRIKAANS", Language::AFRIKAANS)
+        .value("LUXEMBOURGISH", Language::LUXEMBOURGISH)
+        .value("BURMESE", Language::BURMESE)
+        .value("KHMER", Language::KHMER)
+        .value("TIBETAN", Language::TIBETAN)
+        .value("DHIVEHI", Language::DHIVEHI)
+        .value("CHEROKEE", Language::CHEROKEE)
+        .value("SYRIAC", Language::SYRIAC)
+        .value("LIMBU", Language::LIMBU)
+        .value("ORIYA", Language::ORIYA)
+        .value("ASSAMESE", Language::ASSAMESE)
+        .value("CORSICAN", Language::CORSICAN)
+        .value("INTERLINGUE", Language::INTERLINGUE)
+        .value("KAZAKH", Language::KAZAKH)
+        .value("LINGALA", Language::LINGALA)
+        .value("MOLDAVIAN", Language::MOLDAVIAN)
+        .value("PASHTO", Language::PASHTO)
+        .value("QUECHUA", Language::QUECHUA)
+        .value("SHONA", Language::SHONA)
+        .value("TAJIK", Language::TAJIK)
+        .value("TATAR", Language::TATAR)
+        .value("TONGA", Language::TONGA)
+        .value("YORUBA", Language::YORUBA)
+        .value("CREOLES_AND_PIDGINS_ENGLISH_BASED", Language::CREOLES_AND_PIDGINS_ENGLISH_BASED)
+        .value("CREOLES_AND_PIDGINS_FRENCH_BASED", Language::CREOLES_AND_PIDGINS_FRENCH_BASED)
+        .value("CREOLES_AND_PIDGINS_PORTUGUESE_BASED", Language::CREOLES_AND_PIDGINS_PORTUGUESE_BASED)
+        .value("CREOLES_AND_PIDGINS_OTHER", Language::CREOLES_AND_PIDGINS_OTHER)
+        .value("MAORI", Language::MAORI)
+        .value("WOLOF", Language::WOLOF)
+        .value("ABKHAZIAN", Language::ABKHAZIAN)
+        .value("AFAR", Language::AFAR)
+        .value("AYMARA", Language::AYMARA)
+        .value("BASHKIR", Language::BASHKIR)
+        .value("BISLAMA", Language::BISLAMA)
+        .value("DZONGKHA", Language::DZONGKHA)
+        .value("FIJIAN", Language::FIJIAN)
+        .value("GREENLANDIC", Language::GREENLANDIC)
+        .value("HAUSA", Language::HAUSA)
+        .value("HAITIAN_CREOLE", Language::HAITIAN_CREOLE)
+        .value("INUPIAK", Language::INUPIAK)
+        .value("INUKTITUT", Language::INUKTITUT)
+        .value("KASHMIRI", Language::KASHMIRI)
+        .value("KINYARWANDA", Language::KINYARWANDA)
+        .value("MALAGASY", Language::MALAGASY)
+        .value("NAURU", Language::NAURU)
+        .value("OROMO", Language::OROMO)
+        .value("RUNDI", Language::RUNDI)
+        .value("SAMOAN", Language::SAMOAN)
+        .value("SANGO", Language::SANGO)
+        .value("SANSKRIT", Language::SANSKRIT)
+        .value("SISWANT", Language::SISWANT)
+        .value("TSONGA", Language::TSONGA)
+        .value("TSWANA", Language::TSWANA)
+        .value("VOLAPUK", Language::VOLAPUK)
+        .value("ZHUANG", Language::ZHUANG)
+        .value("KHASI", Language::KHASI)
+        .value("SCOTS", Language::SCOTS)
+        .value("GANDA", Language::GANDA)
+        .value("MANX", Language::MANX)
+        .value("MONTENEGRIN", Language::MONTENEGRIN)
+        .value("NUM_LANGUAGES", Language::NUM_LANGUAGES)
+        .export_values();
 
 #ifdef VERSION_INFO
     m.attr("__version__") = VERSION_INFO;

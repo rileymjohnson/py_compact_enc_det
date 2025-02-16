@@ -110,6 +110,7 @@
       <AdditionalIncludeDirectories>$(ProjectDir)compact_enc_det;C:\vcpkg\installed\x64-windows\include;C:\Program Files\Python\Include</AdditionalIncludeDirectories>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

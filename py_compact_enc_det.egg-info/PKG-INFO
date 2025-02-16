@@ -1,5 +1,13 @@
 Metadata-Version: 2.2
 Name: py_compact_enc_det
-Version: 1.0
-Summary: compact_enc_det bindings for python
+Version: 0.0.1
+Summary: Python bindings for compact_enc_det
+Home-page: https://github.com/rileymjohnson/py_compact_enc_det
+Author: Riley Johnson
+Author-email: rileymillerjohnson@gmail.com
+Requires-Python: >=3.11
+Dynamic: author
+Dynamic: author-email
+Dynamic: home-page
+Dynamic: requires-python
 Dynamic: summary
